@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="d-lg-inline-flex">Listado de archivos</h1>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Acciones
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="#">Nuevo</a></li>
+                    <li><a class="dropdown-item" href="#" (click)="deleteSelected()">Borrar seleccionados</a></li>
+                </ul>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Fecha</th>
+                    <th>Dueños</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(archivo of archivos; track archivo) {
+                    <tr>
+                        <td><input type="checkbox" (change)="addOrRemoveToListSelectedArchivos(archivo)"></td>
+                        <td>{{archivo.id}}</td>
+                        <td>
+                            @if(archivo.type) {
+                                <span><img src="assets/images/file_6339332.png" alt="file" style="width: 10px; height: 10px;"> {{archivo.name}}</span>
+                            } @else {
+                                <span><img src="assets/images/folder_16798969.png" style="width: 10px; height: 10px;"> {{archivo.name}}</span>
+                            }
+                        </td>
+                        <td>{{archivo.creation | date:'MMM d, yyyy'}}</td>
+                        <td>
+                            @for(owner of archivo.owners; track owner) {
+                                <img [src]="owner.avatarUrl" alt="Avatar de{{ owner.name }}" width="50" height="50" class="rounded-4">
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
