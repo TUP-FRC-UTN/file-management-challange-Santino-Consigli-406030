@@ -1,82 +1,57 @@
 import { Component } from '@angular/core';
 import { ArchivoService } from '../services/archivo.service';
 import { FileItem, FileType } from '../../models/file.item.model';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
+import { FormComponent } from "../form/form.component";
 
 @Component({
   selector: 'app-listado-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormComponent,NgIf],
   templateUrl: './listado-view.component.html',
   styleUrl: './listado-view.component.css'
 })
 export class ListadoViewComponent {
 
   contador: number=0;
-
+  showList: boolean=true;
   archivos: FileItem[] = [];
-  selectedArchivos: FileItem[] = [];
   
-  constructor(private archivoService: ArchivoService)
+  constructor(private archivoService: ArchivoService) 
   {
 
   }
+  navigateToForm() {
+    this.showList = false;  
+  }
+  navigateToList() {
+    this.showList = true;  
+  }
 
   ngOnInit() {
-    this.archivoService.getArchivos().subscribe(
-      data => this.archivos = data
-    );
+    this.archivos= this.archivoService.getArchivos()
     this.ordenarPorFolderAndAlfabeticamente();
   
   }
   ordenarPorFolderAndAlfabeticamente() {
-    this.archivos.sort((a, b) => {
-    
-      if (a.type === b.type) 
-      {
-        return a.name.localeCompare(b.name);
-      }    
-      if (a.type === FileType.FOLDER && b.type === FileType.FILE) 
-      {
-        return -1;
-      } 
-      else if (a.type === FileType.FILE && b.type === FileType.FOLDER) 
-      {
-      
-        return 1;
-      }
-      return 0;
-    });
-    
-}
-addOrRemoveToListSelectedArchivos(archivo: FileItem) { 
-  //añade o elimina de la lista temporal de archivos para eliminar, si ya existe en el array lo borra sino, lo añade (evento onchange del checkbox)
-  const index = this.selectedArchivos.indexOf(archivo);
-  if (index > -1) {
-    this.selectedArchivos.splice(index, 1);
-  } else {
-    this.selectedArchivos.push(archivo);
-  }
+    this.archivoService.orderFolderAndFiles(this.archivos)
+   }
+
+addOrRemoveToListSelectedArchivos(archivo: FileItem) 
+{ 
+  //añade o elimina de la lista temporal de archivos para eliminar, 
+  //si ya existe en el array lo borra sino, lo añade (evento onchange del checkbox)
+  this.archivoService.addOrRemoTolistArchivos(archivo)
 }
 
-deleteSelected() {
-  if (this.selectedArchivos.length === 1) {
-    this.deleteArchivos(this.selectedArchivos);
-  } else if (this.selectedArchivos.length > 1) {
-    if (confirm(`¿Seguro de querer borrar estos ${this.selectedArchivos.length} archivos?`)) {
-      this.deleteArchivos(this.selectedArchivos);
-    }
-  }
+deleteSelected() 
+{
+  this.archivoService.deleteFolderOrFileSelected()
 }
 
  deleteArchivos(archivosToDelete: FileItem[]) {
-  archivosToDelete.forEach(archivo => {
-    const index = this.archivos.indexOf(archivo);
-    if (index > -1) {
-      this.archivos.splice(index, 1);
-    }
-  });
-  this.selectedArchivos = [];
+
+  this.archivoService.deleteArchivosAndFilesIncluded(archivosToDelete) 
 }
 
 }

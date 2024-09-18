@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="container mt-4">
+    <div *ngIf="showList" class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 class="d-lg-inline-flex">Listado de archivos</h1>
             <div class="dropdown">
@@ -14,7 +14,7 @@
                     Acciones
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="#">Nuevo</a></li>
+                    <li><a class="dropdown-item" href="#" (click)="navigateToForm()">Nuevo</a></li>
                     <li><a class="dropdown-item" href="#" (click)="deleteSelected()">Borrar seleccionados</a></li>
                 </ul>
             </div>
@@ -50,6 +50,9 @@
                 }
             </tbody>
         </table>
+    </div>
+    <div *ngIf="!showList">
+        <app-form (showForm)="navigateToList()"></app-form>
     </div>
 </body>
 </html>

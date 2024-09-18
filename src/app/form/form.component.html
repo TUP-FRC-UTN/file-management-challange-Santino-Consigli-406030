@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Bootstrap</title>
+</head>
+<body>
+    <div *ngIf="showForm" class="container mt-5">
+        <form #form="ngForm" (ngSubmit)="saveFileOrFolder(form)">
+            <h3 class="mb-4">Form</h3>
+            
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <div class="input-group">
+                    <input type="text" name="name" class="form-control" id="nombre" placeholder="Ingrese el nombre" [(ngModel)]="newFileOrFolder.name" required>
+                    <span class="input-group-text bg-white"></span>
+                </div>
+            </div>
+    
+            <div class="mb-3">
+                <label for="tipoArchivo" class="form-label">Tipo Archivo</label>
+                <div class="input-group">
+                    <select name="type" class="form-select border-1" id="tipoArchivo" [(ngModel)]="newFileOrFolder.type" required>
+                        <option *ngFor="let type of tiposArchivo" [value]="type">{{ type }}</option>
+                    </select>
+                </div>
+            </div>
+    
+            <div class="mb-3">
+                <label for="duenos" class="form-label">Dueños</label>
+                <div class="input-group">
+                    <select (change)="addSelectedOwner($event)" class="form-select border-1" id="duenos">
+                        @for (owner of owners; track owner) {
+                            <option  value="{{owner.name}}">{{owner.name}}</option>
+                        }
+                    </select>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col-12">
+                    <ul class="list-group">
+                        <li class="list-group-item" *ngFor="let item of ownersSelected">{{ item.name }}</li>
+                    </ul>
+                </div>
+            </div>
+    
+            <div class="mt-4">
+                <button type="button" class="btn btn-secondary me-2" (click)="returnToList()">Volver</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+    
+
+</body>
+</html>
